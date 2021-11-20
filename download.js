@@ -6,23 +6,29 @@ const fs = require('fs'),
 const Stream = require('stream').Transform;
 const fetch = require('node-fetch');
 const getUrlsToArray = require("get-urls-to-array");
+const cp = require('child_process');
 
-const downloadImageFromURL = (url, filename, callback) => {
-    let client = http;
-    if (url.toString().indexOf("https") === 0) {
-        // @ts-ignore
-        client = https;
+/**
+ * @param {string} command
+ * @param {{cwd?: string, quiet?: boolean}} [options]
+ * @returns {Promise<{ stdout: string, stderr: string }>}
+ */
+const exec = async (command, options) => {
+    if (!options?.quiet) {
+        console.log(`Running: ${command}`);
     }
-
-    client.request(url, function (response) {
-        const data = new Stream();
-        response.on('data', function (chunk) {
-            data.push(chunk);
+    return new Promise((resolve, reject) => {
+        const child = cp.exec(command, { cwd: options?.cwd }, (error, stdout, stderr) => {
+            if (error) {
+                return reject(error);
+            }
+            resolve({ stdout, stderr });
         });
-        response.on('end', function () {
-            fs.writeFileSync("./output/"+filename, data.read());
-        });
-    }).end();
+        if (!options?.quiet) {
+            child.stdout.pipe(process.stdout);
+        }
+        child.stderr.pipe(process.stderr);
+    });
 };
 
 let at = 0;
@@ -41,7 +47,10 @@ const fetchNew = () => {
     }).then((data) => {
         const images = getUrlsToArray(data).filter(url => new URL(url).hostname === 'upload.wikimedia.org');
         for (const image of images) {
-            downloadImageFromURL(image, new URL(image).pathname.split("/")[new URL(image).pathname.split("/").length - 1].slice(0, 150));
+            console.log(image);
+            try {
+                exec(`wget -P output/ '${image.slice(0, 300)}'`);
+            } catch { }
         }
         at = at + step;
         fetchNew();
