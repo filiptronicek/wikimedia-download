@@ -39,7 +39,7 @@ const pBar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
 
 const fetchNew = (/** @type {string[]} */ mimeTypes) => {
   for (const mimeType of mimeTypes) {
-    console.log(`Fetching page ${at / step + 1} of ${mimeType}`);
+    console.log(`\nFetching page ${at / step + 1} of ${mimeType}`);
     fetch(
       `https://commons.wikimedia.org/w/index.php?title=Special:MIMESearch&limit=${step}&offset=${at}&mime=${encodeURIComponent(
         mimeType
