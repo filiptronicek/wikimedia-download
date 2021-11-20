@@ -121,22 +121,24 @@ const inquirerConverted = possibleMimeTypes.map((type) => {
   return { name: type };
 });
 
-inquirer
-  .prompt([
-    {
-      type: "checkbox",
-      message: "Select mime types to download",
-      name: "mimeTypes",
-      choices: [...inquirerConverted],
-      validate(answer) {
-        if (answer.length < 1) {
-          return "You must choose at least one mime type.";
-        }
+if (parser.parse_args().help) {
+  inquirer
+    .prompt([
+      {
+        type: "checkbox",
+        message: "Select mime types to download",
+        name: "mimeTypes",
+        choices: [...inquirerConverted],
+        validate(answer) {
+          if (answer.length < 1) {
+            return "You must choose at least one mime type.";
+          }
 
-        return true;
+          return true;
+        },
       },
-    },
-  ])
-  .then((mimeTypes) => {
-    fetchNew(mimeTypes.mimeTypes);
-  });
+    ])
+    .then((mimeTypes) => {
+      fetchNew(mimeTypes.mimeTypes);
+    });
+}
