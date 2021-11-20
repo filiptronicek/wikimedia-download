@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "get-urls-to-array": "^1.0.0",
+    "node-fetch": "^2.6.6"
+  }
+}
