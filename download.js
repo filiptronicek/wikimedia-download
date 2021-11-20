@@ -5,15 +5,16 @@ const getUrlsToArray = require("get-urls-to-array");
 const cp = require("child_process");
 const cliProgress = require("cli-progress");
 const inquirer = require("inquirer");
-const { ArgumentParser } = require('argparse');
+const { ArgumentParser } = require("argparse");
 
 const parser = new ArgumentParser({
-    description: 'WikiMedia Downloader'
-  });
-   
-  parser.add_argument('-l', '--limit', { help: 'Limit of how many files to download', type: "int" });
-   
-  console.dir(parser.parse_args().limit);
+  description: "WikiMedia Downloader",
+});
+
+parser.add_argument("-l", "--limit", {
+  help: "Limit of how many files to download",
+  type: "int",
+});
 
 /**
  * @param {string} command
@@ -58,12 +59,13 @@ const fetchNew = (/** @type {string[]} */ mimeTypes) => {
         if (res.ok) {
           return res.text();
         } else {
-            const newTypes = mimeTypes.shift();
-            if (newTypes) {
+          const newTypes = mimeTypes.shift();
+          if (newTypes) {
             fetchNew();
-            } else {
-                console.log("Dont, exiting.")
-            }
+          } else {
+            console.log("Done, exiting.");
+            process.exit();
+          }
         }
       })
       .then(async (data) => {
@@ -72,6 +74,11 @@ const fetchNew = (/** @type {string[]} */ mimeTypes) => {
         );
         pBar.start(step, 0);
         for (const image of images) {
+          if (at++ >= parser.parse_args().limit) {
+            pBar.stop();
+            console.log("Limit reached");
+            process.exit();
+          }
           pBar.increment(1);
           try {
             await exec(`wget -P output/ --quiet '${image.slice(0, 300)}'`, {
@@ -80,7 +87,6 @@ const fetchNew = (/** @type {string[]} */ mimeTypes) => {
           } catch {}
         }
         pBar.stop();
-        at = at + step;
         fetchNew(mimeTypes);
       });
   }
