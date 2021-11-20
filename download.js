@@ -44,12 +44,12 @@ const fetchNew = () => {
         } else {
             throw new Error("End " + res.status);
         }
-    }).then((data) => {
+    }).then(async (data) => {
         const images = getUrlsToArray(data).filter(url => new URL(url).hostname === 'upload.wikimedia.org');
         for (const image of images) {
             console.log(image);
             try {
-                exec(`wget -P output/ '${image.slice(0, 300)}'`);
+                await exec(`wget -P output/ '${image.slice(0, 300)}'`);
             } catch { }
         }
         at = at + step;
