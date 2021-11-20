@@ -5,6 +5,15 @@ const getUrlsToArray = require("get-urls-to-array");
 const cp = require("child_process");
 const cliProgress = require("cli-progress");
 const inquirer = require("inquirer");
+const { ArgumentParser } = require('argparse');
+
+const parser = new ArgumentParser({
+    description: 'WikiMedia Downloader'
+  });
+   
+  parser.add_argument('-l', '--limit', { help: 'Limit of how many files to download', type: "int" });
+   
+  console.dir(parser.parse_args().limit);
 
 /**
  * @param {string} command
@@ -49,7 +58,12 @@ const fetchNew = (/** @type {string[]} */ mimeTypes) => {
         if (res.ok) {
           return res.text();
         } else {
-          throw new Error("End " + res.status);
+            const newTypes = mimeTypes.shift();
+            if (newTypes) {
+            fetchNew();
+            } else {
+                console.log("Dont, exiting.")
+            }
         }
       })
       .then(async (data) => {

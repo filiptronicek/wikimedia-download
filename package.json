@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "argparse": "^2.0.1",
     "cli-progress": "^3.9.1",
     "get-urls-to-array": "^1.0.0",
     "inquirer": "^8.2.0",
