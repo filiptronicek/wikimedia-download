@@ -41,7 +41,7 @@ const fetchNew = () => {
     }).then((data) => {
         const images = getUrlsToArray(data).filter(url => new URL(url).hostname === 'upload.wikimedia.org');
         for (const image of images) {
-            downloadImageFromURL(image, new URL(image).pathname.split("/").at(-1).slice(0, 150));
+            downloadImageFromURL(image, new URL(image).pathname.split("/")[new URL(image).pathname.split("/").length - 1].slice(0, 150));
         }
         at = at + step;
         fetchNew();
