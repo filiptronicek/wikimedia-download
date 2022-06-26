@@ -4,7 +4,7 @@
     "cli-progress": "^3.9.1",
     "get-urls-to-array": "^1.0.0",
     "inquirer": "^8.2.0",
-    "node-fetch": "^2.6.6"
+    "node-fetch": "^2.6.7"
   },
   "devDependencies": {
     "@types/inquirer": "^8.1.3"
